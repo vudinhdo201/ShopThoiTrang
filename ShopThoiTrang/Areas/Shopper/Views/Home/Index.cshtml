@@ -1,0 +1,270 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Shopper/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    ShopThoiTrang.Areas.Shopper.Models.UserContext db = new ShopThoiTrang.Areas.Shopper.Models.UserContext();
+    ShopThoiTrang.Repository.ProductDao proDAO = new ShopThoiTrang.Repository.ProductDao();
+}
+<!-- ------------- featured categorries ---------------- -->
+<div class="categories">
+    <div class="small-container">
+        <div class="row">
+            <div class="col-3">
+                <img src="~/Areas/Shopper/Image/category-1.jpg">
+            </div>
+            <div class="col-3">
+                <img src="~/Areas/Shopper/Image/category-2.jpg">
+            </div>
+            <div class="col-3">
+                <img src="~/Areas/Shopper/Image/category-3.jpg">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<!-- ------------- featured products ---------------- -->
+<div class="small-container">
+    <h2 class="title">Discount Fashion</h2>
+    <div class="tab-head ">
+        <div class=" tab-content tab-content-t ">
+            <div class="tab-pane active text-style" id="tab1">
+                <div class=" con-w3l">
+                    @{int qtt1 = 0;}
+                    @foreach (var item in db.Products.SqlQuery("SELECT * FROM Products ORDER BY proDiscount DESC"))
+                    {
+                        qtt1++;
+                        if (qtt1 > 4)
+                        {
+                            break;
+                        }
+                        int newPrice = Int32.Parse(item.proPrice) - ((Int32.Parse(item.proPrice) * item.proDiscount.Value) / 100);
+                        <div class="col-md-3 m-wthree" style="margin-bottom:30px;">
+                            <div class="col-m">
+                                <a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })" class="offer-img">
+                                    <img src="@item.proPhoto" width="150" height="150" alt="@item.proPhoto">
+                                    @if (Int32.Parse(item.proPrice) > newPrice)
+                                    {
+                                        <div class="offer"><p><span>Giảm @item.proDiscount %</span></p></div>
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                </a>
+                                <div class="mid-1">
+                                    <div class="women">
+                                        @if (item.proName.Length > 20)
+                                        {
+                                            <h6><a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })" data-toggle="tooltip" title="@item.proName">@item.proName.Substring(0, 19) . . .</a></h6>
+                                        }
+                                        else
+                                        {
+                                            <h6><a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })">@item.proName</a></h6>
+                                        }
+                                    </div>
+                                    (Size: @item.proSize)
+                                    <div class="mid-2">
+                                        <p><label>@proDAO.formatNumber(item.proPrice) VNĐ</label><em class="item_price">@proDAO.formatNumber(newPrice.ToString()) VNĐ</em></p>
+                                        <div class="clearfix"></div>
+                                        <div class="block">
+                                            @if (db.Rates.Find(item.proID) != null)
+                                            {
+                                                for (int i = 0; i < db.Rates.Find(item.proID).rateStar; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:rgb(255, 172, 0);" />
+                                                }
+                                                for (int i = 0; i < 5 - db.Rates.Find(item.proID).rateStar; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:#b0b0b0" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                for (int i = 0; i < 5; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:#b0b0b0" />
+                                                }
+                                            }
+                                        </div>
+                                        <div>
+                                            <a href="#"><img src="@item.Producer.pdcPhoto" width="20" height="20" /> @item.Producer.pdcName</a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="add">
+                                        <a class="btn btn-success" href="@Url.Action("ThemVaoGio", "GioHang", new { SanPhamID = item.proID })"> <span class="glyphicon glyphicon-shopping-cart"></span> Thêm vào giỏ </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="title">Latest Products</h2>
+    <div class="tab-head ">
+        <div class=" tab-content tab-content-t ">
+            <div class="tab-pane active text-style" id="tab1">
+                <div class=" con-w3l">
+                    @{int qtt = 0;}
+                    @foreach (var item in db.Products.SqlQuery("SELECT * FROM Products ORDER BY proUpdateDate DESC"))
+                    {
+                        qtt++;
+                        if (qtt > 8)
+                        {
+                            break;
+                        }
+                        int newPrice = Int32.Parse(item.proPrice) - ((Int32.Parse(item.proPrice) * item.proDiscount.Value) / 100);
+                        <div class="col-md-3 m-wthree" style="margin-bottom:30px;">
+                            <div class="col-m">
+                                <a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })" class="offer-img">
+                                    <img src="@item.proPhoto" width="150" height="150" alt="@item.proPhoto">
+                                    @if (Int32.Parse(item.proPrice) > newPrice)
+                                    {
+                                        <div class="offer"><p><span>Giảm @item.proDiscount %</span></p></div>
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                </a>
+                                <div class="mid-1">
+                                    <div class="women">
+                                        @if (item.proName.Length > 20)
+                                        {
+                                            <h6><a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })" data-toggle="tooltip" title="@item.proName">@item.proName.Substring(0, 19) . . .</a></h6>
+                                        }
+                                        else
+                                        {
+                                            <h6><a href="@Url.Action("ProductDetail", "Products", new { id=item.proID })">@item.proName</a></h6>
+                                        }
+                                    </div>
+                                    (Size: @item.proSize)
+                                    <div class="mid-2">
+                                        <p><label>@proDAO.formatNumber(item.proPrice) VNĐ</label><em class="item_price">@proDAO.formatNumber(newPrice.ToString()) VNĐ</em></p>
+                                        <div class="clearfix"></div>
+                                        <div class="block">
+                                            @if (db.Rates.Find(item.proID) != null)
+                                            {
+                                                for (int i = 0; i < db.Rates.Find(item.proID).rateStar; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:rgb(255, 172, 0);" />
+                                                }
+                                                for (int i = 0; i < 5 - db.Rates.Find(item.proID).rateStar; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:#b0b0b0" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                for (int i = 0; i < 5; i++)
+                                                {
+                                                    <img src="~/Image/star.png" style="background-color:#b0b0b0" />
+                                                }
+                                            }
+                                        </div>
+                                        <div>
+                                            <a href="#"><img src="@item.Producer.pdcPhoto" width="20" height="20" /> @item.Producer.pdcName</a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="add">
+                                        <a class="btn btn-success" href="@Url.Action("ThemVaoGio", "GioHang", new { SanPhamID = item.proID })"> <span class="glyphicon glyphicon-shopping-cart"></span>  Thêm vào giỏ </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------ offer -------------- -->
+
+<!-- ------------ testimonial -------------- -->
+<div class="testimonial">
+    <div class="small-container">
+        <div class="row">
+            <div class="col-3">
+                <i class="fa fa-qoute-lef"></i>
+                <p>
+                    Abilities or he perfectly pretended so strangers be exquisite. Oh to another chamber pleased
+                    imagine do in. Went me rank at last loud shot an draw. Excellent so to no sincerity smallness.
+                    Removal request delight if on he we
+                </p>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <img src="~/Areas/Shopper/Image/user-1.png">
+                <h3>Đạt 1 Phích</h3>
+            </div>
+            <div class="col-3">
+                <i class="fa fa-qoute-lef"></i>
+                <p>
+                    Abilities or he perfectly pretended so strangers be exquisite. Oh to another chamber pleased
+                    imagine do in. Went me rank at last loud shot an draw. Excellent so to no sincerity smallness.
+                    Removal request delight if on he we
+                </p>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <img src="~/Areas/Shopper/Image/user-2.png">
+                <h3>An Nguyen</h3>
+            </div>
+            <div class="col-3">
+                <i class="fa fa-qoute-lef"></i>
+                <p>
+                    Abilities or he perfectly pretended so strangers be exquisite. Oh to another chamber pleased
+                    imagine do in. Went me rank at last loud shot an draw. Excellent so to no sincerity smallness.
+                    Removal request delight if on he we
+                </p>
+                <div class="rating">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star-o"></i>
+                </div>
+                <img src="~/Areas/Shopper/Image/user-3.png">
+                <h3>Quang Hoang</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ------------------- brands --------------------- -->
+<div class="brands">
+    <div class="small-container">
+        <div class="row">
+            <div class="col-5">
+                <img src="~/Areas/Shopper/Image/logo-godrej.png">
+            </div>
+            <div class="col-5">
+                <img src="~/Areas/Shopper/Image/logo-oppo.png">
+            </div>
+            <div class="col-5">
+                <img src="~/Areas/Shopper/Image/logo-coca-cola.png">
+            </div>
+            <div class="col-5">
+                <img src="~/Areas/Shopper/Image/logo-paypal.png">
+            </div>
+            <div class="col-5">
+                <img src="~/Areas/Shopper/Image/logo-philips.png">
+            </div>
+        </div>
+    </div>
+</div>
+
